@@ -1,1 +1,1 @@
-# Hybrid P2P Alarm/Messaging app (final year project)
+# Centralized P2P Alarm/Messaging app (final year project)
