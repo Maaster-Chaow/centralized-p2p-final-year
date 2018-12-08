@@ -11,7 +11,7 @@ def check_user_agent(handler):
         #return handler()
         user_info = app.cache.get(request.remote_addr)
         if user_info:
-            print('Earlier port number of %s is %s' %(user_info['ip'],
+            print('Host %s is list on port %s' %(user_info['ip'],
                                                       user_info['port']))
         return handler()
     return check
@@ -24,5 +24,20 @@ def index():
         'ip': request.remote_addr,
         'port': request.environ.get('REMOTE_PORT')
     }
-    app.cache.set(request.remote_addr, user_info)
     return jsonify(user_info), 200
+
+@app.route('/', methods=['POST'])
+def get_host_info():
+    port = request.form.get('port')
+    host = request.remote_addr
+    host_entered = app.cache.set(host, port)
+    peers = request.form.get('peers')
+    if peers is None or len(peers) == 0:
+        return ("OK", 200) if host_entered else ("Server Error", 500)
+    else:
+        peers = [ip.strip() for ip in peers.split(',')]
+        live_hosts = {ip:app.cache.get(ip) for ip in peers}
+        if live_hosts is None:
+            return "OK", 200
+        else:
+            return jsonify(live_hosts), 200
