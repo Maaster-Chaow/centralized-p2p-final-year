@@ -7,8 +7,8 @@
 import os
 
 from flask_api import FlaskAPI
-#from flask_sqlalchemy import SQLAlchemy
-#from flask_migrate import Migrate
+# from flask_sqlalchemy import SQLAlchemy
+# from flask_migrate import Migrate
 
 #from app.lib import CustomFlask, HostCache
 from app.instance.config import app_config
