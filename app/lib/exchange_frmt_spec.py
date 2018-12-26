@@ -69,7 +69,7 @@ class DataFormatSpecs(object):
     """Class for creation and validation of data formats for
     communication between client and server.
     """
-
+    __field_sep__ = '0'
     def __init__(self, frmt_type, client_json_data=None):
         self.frmt_type = frmt_type
         if client_json_data is not None:
@@ -90,7 +90,7 @@ class DataFormatSpecs(object):
 
             for field in d:
                 if len(init_s) > 0:
-                    new_s = '_'.join([init_s, field])
+                    new_s = __field_sep__.join([init_s, field])
                 else:
                     new_s = field
             
@@ -133,6 +133,6 @@ class DataFormatSpecs(object):
                      if not attr.startswith('_')]
         data_obj = {}
         for attr in attr_list:
-            setfields(data_obj, attr.split('_'), getattr(self, attr))
+            setfields(data_obj, attr.split(__field_sep__), getattr(self, attr))
 
         return data_obj
