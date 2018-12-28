@@ -26,8 +26,8 @@ class FormatTypes(Enum):
 
         return True if fields match otherwise False."""
 
-        if isinstance(dtfrmt) is not dict:
-            return isinstance(obj) is dtfrmt
+        if not isinstance(dtfrmt, dict):
+            return isinstance(obj, dtfrmt)
 
         for field in obj:
             if field not in dtfrmt:
@@ -58,7 +58,7 @@ class DataFormatError(Exception):
     def __init__(self, err_data):
         super().__init__('Client data not in proper format:\n{}'
                          .format(err_data))
-        
+
 class DataCreationError(Exception):
     """Raised when there is any error during the creation
     of particular data format."""
@@ -74,16 +74,16 @@ class DataFormatSpecs(object):
         self.frmt_type = frmt_type
         if client_json_data is not None:
             self.parse_client_data(client_json_data)
-    
+
     def parse_client_data(self, client_json_data):
         """Parse client_json_data and set appropriate
         attributes in the class.
-    
+
         Throw error if there is any problem.
         """
         def setattr_from_fields(instance, d, init_s=''):
             """Set attributes in instance using the fields in d.
-    
+
             @instance: a class instance.
             @d: dictionary.
             @init_s: initial string."""
@@ -93,18 +93,18 @@ class DataFormatSpecs(object):
                     new_s = __field_sep__.join([init_s, field])
                 else:
                     new_s = field
-            
-                if isinstance(d[field]) is not dict:
+
+                if not isinstance(d[field], dict):
                     setattr(instance, new_s, d[field])
                     continue
-        
+
                 setattr_from_fields(instance, d, new_s)
 
         try:
             client_json_obj = json.loads(client_json_data)
         except:
             raise DataFormatError(client_json_obj)
-        
+
         #fields_match = check_field(data_format, client_json_obj)
         #if not fields_match: #raise exception
         dfrmt_ok = FormatTypes.check_field(DATA_EXCHANGE_FORMATS[self.frmt_type],
@@ -128,7 +128,7 @@ class DataFormatSpecs(object):
             if d.get(stls[0], None) is None:
                 d[stls[0]] = {}
             setfields(d[stls[0]], stls[1:], val)
-            
+
         attr_list = [attr for attr in dir(self)
                      if not attr.startswith('_')]
         data_obj = {}
