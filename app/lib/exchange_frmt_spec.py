@@ -40,6 +40,7 @@ class FormatTypes(Enum):
 
 DATA_EXCHANGE_FORMATS = {
     FormatTypes.CLIENT_INIT: {
+        'd_head': str, # client_init
         'c_info': {
             'c_conn' : {
                 'ip': str,

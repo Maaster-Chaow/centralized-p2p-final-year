@@ -20,6 +20,7 @@ class TestFormatTypes(unittest.TestCase):
         self.dtfrmt = DXFrmt.DATA_EXCHANGE_FORMATS[
                         DXFrmt.FormatTypes.CLIENT_INIT]
         self.client_init_obj = {
+            'd_head': 'client_init',
             'c_info' : {
                 'c_conn': {
                     'ip': '127.0.0.1',
@@ -44,6 +45,7 @@ class TestDataFormatSpecs(unittest.TestCase):
         self.dtfrmt = DXFrmt.DATA_EXCHANGE_FORMATS[
                         DXFrmt.FormatTypes.CLIENT_INIT]
         self.client_init_obj = {
+            'd_head' : 'client_init',
             'c_info' : {
                 'c_conn': {
                     'ip': '127.0.0.1',
@@ -54,6 +56,7 @@ class TestDataFormatSpecs(unittest.TestCase):
             'to_peers': ['1', '2', '3'],
             }
         self.fields = {
+            '00d_head': 'client_init',
             '00c_info0c_conn0ip': '127.0.0.1',
             '00c_info0c_conn0port': 12345,
             '00c_info0user_id': '8123145534',
