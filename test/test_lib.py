@@ -3,6 +3,7 @@
 import os
 import sys
 import unittest
+import json
 
 
 __this_dir__ = os.path.dirname(os.path.realpath(__file__))
@@ -13,7 +14,7 @@ sys.path.append(__app_dir__)
 from lib import DXFrmt
 
 
-class FormatTypesTest(unittest.TestCase):
+class TestFormatTypes(unittest.TestCase):
     """Test methods in FormatTypes."""
     def setUp(self):
         self.dtfrmt = DXFrmt.DATA_EXCHANGE_FORMATS[
@@ -34,6 +35,41 @@ class FormatTypesTest(unittest.TestCase):
                         self.dtfrmt, self.client_init_obj))
         self.assertFalse(DXFrmt.FormatTypes.check_field(
                         self.dtfrmt, {'a':[],'b':'happy'}))
+
+
+class TestDataFormatSpecs(unittest.TestCase):
+    """Test DataFormatSpecs class in lib."""
+
+    def setUp(self):
+        self.dtfrmt = DXFrmt.DATA_EXCHANGE_FORMATS[
+                        DXFrmt.FormatTypes.CLIENT_INIT]
+        self.client_init_obj = {
+            'c_info' : {
+                'c_conn': {
+                    'ip': '127.0.0.1',
+                    'port': 12345,
+                    },
+                'user_id': '8123145534',
+                },
+            'to_peers': ['1', '2', '3'],
+            }
+        self.fields = {
+            '00c_info0c_conn0ip': '127.0.0.1',
+            '00c_info0c_conn0port': 12345,
+            '00c_info0user_id': '8123145534',
+            '00to_peers': ['1', '2', '3']
+        }
+        self.client_init_json = json.dumps(self.client_init_obj)
+
+    def test_parse_client_data(self):
+        frmt = DXFrmt.FormatTypes.CLIENT_INIT
+        oDxfrmt = DXFrmt.DataFormatSpecs(frmt, self.client_init_json)
+        field_sep = DXFrmt.DataFormatSpecs.__field_sep__
+        fields_set = [f for f in dir(oDxfrmt) if f.startswith(field_sep)]
+        self.assertTrue(len(fields_set), len(self.fields))
+        for f in fields_set:
+            self.assertEqual(self.fields[f], getattr(oDxfrmt, f))
+
 
 
 if __name__ == '__main__':

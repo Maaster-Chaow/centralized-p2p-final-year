@@ -90,7 +90,7 @@ class DataFormatSpecs(object):
 
             for field in d:
                 if len(init_s) > 0:
-                    new_s = __field_sep__.join([init_s, field])
+                    new_s = self.__field_sep__.join([init_s, field])
                 else:
                     new_s = field
 
@@ -98,7 +98,7 @@ class DataFormatSpecs(object):
                     setattr(instance, new_s, d[field])
                     continue
 
-                setattr_from_fields(instance, d, new_s)
+                setattr_from_fields(instance, d[field], new_s)
 
         try:
             client_json_obj = json.loads(client_json_data)
@@ -114,7 +114,7 @@ class DataFormatSpecs(object):
 
         # set appropriate attributes. Attributes are ste as
         # self.field_nextfield_1_.._nextfiled_n = non_filed.
-        setattr_from_fields(self, client_json_obj)
+        setattr_from_fields(self, client_json_obj, self.__field_sep__)
 
     def create_data(self):
         """Create data according to self.frmt_type.
