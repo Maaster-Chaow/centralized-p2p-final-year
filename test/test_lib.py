@@ -70,6 +70,12 @@ class TestDataFormatSpecs(unittest.TestCase):
         for f in fields_set:
             self.assertEqual(self.fields[f], getattr(oDxfrmt, f))
 
+    def test_create_data(self):
+        frmt = DXFrmt.FormatTypes.CLIENT_INIT
+        oDxfrmt = DXFrmt.DataFormatSpecs(frmt, self.client_init_json)
+        oData = oDxfrmt.create_data()
+        self.assertEqual(self.client_init_obj, oData)
+
 
 
 if __name__ == '__main__':

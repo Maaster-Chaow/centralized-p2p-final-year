@@ -130,9 +130,11 @@ class DataFormatSpecs(object):
             setfields(d[stls[0]], stls[1:], val)
 
         attr_list = [attr for attr in dir(self)
-                     if not attr.startswith('_')]
+                     if attr.startswith(self.__field_sep__)]
         data_obj = {}
         for attr in attr_list:
-            setfields(data_obj, attr.split(__field_sep__), getattr(self, attr))
+            field = attr.lstrip(self.__field_sep__ * 2)
+            setfields(data_obj, field.split(self.__field_sep__),
+                getattr(self, attr))
 
         return data_obj
