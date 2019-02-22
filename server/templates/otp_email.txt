@@ -1,0 +1,4 @@
+Confirmation mail for {{ user.username }}
+
+Respond with OTP: {{ user.otp }}
+
