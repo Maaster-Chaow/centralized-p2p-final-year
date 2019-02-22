@@ -1,27 +1,35 @@
 import os
 
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from flask_mail import Mail
+from flask import Flask, g
 
-from server.config import app_config
-from server.customs import JSONResponse
+from .config import app_config, OTP_TIME_OUT
+from .customs import JSONResponse
 
 
-_flask_env = os.getenv('FLASK_ENV', 'production')
-app = Flask(__name__.split('.')[0])
-app.config.from_object(app_config[_flask_env])
-app.response_class = JSONResponse
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
-mail = Mail(app)
-
-
-from server import routes
-from server.models import User
-
-
-@app.shell_context_processor
-def make_shell_context():
-    return dict(db=db, User=User)
+def create_app(config=None):
+    flask_env = os.getenv('FLASK_ENV', 'production')
+    app = Flask(__name__)
+    app.config.from_object(app_config[flask_env])
+    app.response_class = JSONResponse
+    if not config is None:
+        app.config.from_object(app_config[config])
+    
+    with app.app_context():
+        from cacheout import Cache
+        g.pending_registration = Cache(ttl=OTP_TIME_OUT)
+        
+        from .models import db, migrate, User
+        from .mail import mail
+        db.init_app(app)
+        
+        mail.init_app(app)
+        migrate.init_app(app, db)
+        
+        @app.shell_context_processor
+        def make_shell_context():
+            return dict(db=db, User=User)
+        
+        from . import registration
+        app.register_blueprint(registration.bp)
+        
+        return app

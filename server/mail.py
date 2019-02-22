@@ -1,11 +1,17 @@
 '''Utility module'''
 from threading import Thread
 
-from flask_mail import Message
+from flask import current_app
+from flask_mail import Mail, Message
 
-from server import app, mail
-from server.config import ADMINS_EMAIL
+from .config import ADMINS_EMAIL
 
+
+mail = Mail()
+
+
+def validate_email():
+    pass
 
 def concurrent(f):
     '''Start a thread in background.'''
@@ -26,7 +32,7 @@ def send_mail(recipients, subject, text_body, html_body):
                   recipients=recipients)
     msg.body = text_body
     msg.html = html_body
-    send_async_email(app, msg)
+    send_async_email(current_app._get_current_object(), msg)
 
 
 def make_response_msg(status, msg, **kwargs):

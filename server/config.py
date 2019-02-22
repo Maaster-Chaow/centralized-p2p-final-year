@@ -5,6 +5,11 @@ _cwd = os.path.abspath(os.path.dirname(__file__))
 _dev_db_dir = os.path.join(_cwd, '../test/server/test.db')
 
 ADMINS_EMAIL = ['kyunkiimgood@gmail.com']
+REGIS_PENDING = 'pending_registrations'
+OTP_TIME_OUT = 5*60 # in seconds
+OTP_SIZE = 6 # number of digits in otp
+MAX_OTP_RETRY = 3
+OTP_TRUN_STR_LEN = 32
 
 
 class Config(object):
