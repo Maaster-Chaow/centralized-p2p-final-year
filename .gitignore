@@ -2,3 +2,4 @@ env
 .project
 .pydevproject
 __pycache__
+migrations

@@ -33,10 +33,3 @@ def send_mail(recipients, subject, text_body, html_body):
     msg.body = text_body
     msg.html = html_body
     send_async_email(current_app._get_current_object(), msg)
-
-
-def make_response_msg(status, msg, **kwargs):
-    resp = dict(status=status, msg=msg)
-    for name,value in kwargs.items():
-        resp[name] = value
-    return resp

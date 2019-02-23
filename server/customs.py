@@ -4,6 +4,13 @@ from cacheout import Cache
 from .config import OTP_TIME_OUT
 
 
+def make_response_msg(status, msg, **kwargs):
+    resp = dict(status=status, msg=msg)
+    for name,value in kwargs.items():
+        resp[name] = value
+    return resp
+
+
 class JSONResponse(Response):
     '''Custom Response class'''
     default_mimetype = 'application/json'
@@ -26,6 +33,10 @@ class RegisCache:
     def reg_pending(self):
         app = current_app or self.app
         return app.extensions['reg_pending'][self]
+    
+    @property
+    def ttl(self):
+        return self.reg_pending.ttl
     
     def get(self, key, default=None):
         return self.reg_pending.get(key, default)
@@ -80,6 +91,9 @@ class RegisCache:
     
     def values(self):
         return self.reg_pending.values()
+    
+    def __contains__(self, key):
+        return key in self.reg_pending
 
 
 pending_regs = RegisCache()
