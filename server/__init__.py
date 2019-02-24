@@ -1,6 +1,7 @@
 import os
 
-from flask import Flask, g
+from flask import Flask
+from werkzeug.utils import redirect
 
 
 
@@ -29,6 +30,14 @@ def create_app(config=None):
         @app.shell_context_processor
         def make_shell_context():
             return dict(db=db, User=User)
+        
+        @app.before_request
+        def force_secure():
+            from flask import request
+            if app.config.get('SSL'):
+                if request.endpoint in app.view_functions and \
+                    not request.is_secure:
+                    return redirect(request.url.replace('http://', 'https://'))
         
         from . import registration
         app.register_blueprint(registration.bp)

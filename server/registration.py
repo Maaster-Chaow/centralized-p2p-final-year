@@ -49,3 +49,33 @@ def register():
                       text_body=render_template('otp_email.txt', user=user),
                       html_body=render_template('otp_email.html', user=user))
     return make_response_msg(status, msg)
+
+@bp.route('/confirm', methods=['POST'])
+def confirm():
+    json_data = request.get_json()
+    email_id = json_data.get('email_id')
+    otp = json_data.get('otp')
+    status, msg = 'ok', 'otp confirmed'
+    pub_key, cert = None, None
+    if not(email_id or otp):
+        status, msg = 'error', 'no data, data required'
+    elif not email_id:
+        status, msg = 'error', 'email_id required'
+    elif not otp:
+        status, msg = 'error', 'otp required'
+    else:
+        user_data = pending_regs.get(email_id, False)
+        if not user_data:
+            status, msg = 'error', 'expired! restart registration'
+        elif otp == user_data.get('otp'):
+            # generate public key for user
+            # generate digital certificate for user signed by server.
+            # add user to databse.
+            # TODO
+            pub_key = None #TODO
+            cert = None #TODO
+        else:
+            status, msg = 'error', 'otp invalid'
+    return make_response_msg(status, msg, pub_key=pub_key, cert=cert)
+        
+        
