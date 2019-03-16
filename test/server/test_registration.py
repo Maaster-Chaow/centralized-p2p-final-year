@@ -85,4 +85,9 @@ def test_registration_pending(client, app):
                                   'msg': 'registration pending, awaiting confirmation'}
         assert pending_regs.size() == 2
         assert pending_regs.ttl == OTP_TIME_OUT
+
+@pytest.mark.parametrize(('email_id', 'pub_key', 'otp', 'status', 'msg'), (
+    ('', '', '', 'error', 'no data, data required'),
+    ('', '', )
+))
     
